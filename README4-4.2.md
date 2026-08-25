@@ -23,11 +23,44 @@ echo $XDG_SESSION_TYPE     # нужно: x11
 **«Ubuntu on Xorg»** → ввести пароль. Запоминается навсегда. (На Wayland
 xdotool не может «тыкать» в чужие окна — это осознанное ограничение Wayland.)
 
-## v4.0 «ГЛАЗА» (8+ ГБ)
+## v4.0 «ГЛАЗА» — видит экран
 
-См. [README1-4.md](README1-4.md#v4-0-глаза--видит-экран). Два мозга
-одновременно: планировщик + Qwen2.5-VL. Работает, но тяжело — поэтому
-появилась v4.1.
+Требования: **8+ ГБ RAM**, X11, два «мозга».
+
+Установка зрительной модели:
+
+```bash
+cd ~/brain
+# Скачайте ДВА файла из huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF:
+#   qwen2.5-vl-3b-instruct-q4_k_m.gguf  (~2 ГБ)
+#   mmproj-qwen2.5-vl-3b-instruct-f16.gguf (~0.9 ГБ) — лежать тем же каталогом!
+echo "FROM ./qwen2.5-vl-3b-instruct-q4_k_m.gguf" > Modelfile
+ollama create eyes -f Modelfile
+```
+
+Запуск:
+
+```bash
+AGENT_MODEL=mybrain AGENT_VISION=eyes python3 agent_v4.py
+EYE=always AGENT_MODEL=mybrain AGENT_VISION=eyes python3 agent_v4.py   # автовзгляд после каждого шага (медленно!)
+```
+
+Новые действия:
+
+```json
+{"see": "что на экране, где кнопка Background — дай КООРДИНАТЫ"}
+{"click": [627, 259]}
+```
+
+Правило работы с экраном: **see → click → see-again**. Честная оговорка:
+глаза ошибаются на ±50 px — промазал, уточни и кликни ещё раз.
+Без зрительной модели v4.0 сама деградирует до поведения v3.1.
+
+---
+
+**Продолжение** — [README4-4.2.md](README4-4.2.md): GUI-эпоха,
+зрение без нейросети («СОНАР»), детерминированный запуск программ.
+История изменений целиком — [CHANGELOG.md](CHANGELOG.md).
 
 ## v4.1 «СОНАР» — зрение без нейросети 📡
 
